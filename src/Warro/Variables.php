@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Warro;
 
-class Variables
+interface Variables
 {
 
 	public const NAME = 'Ganja';
