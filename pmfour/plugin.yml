@@ -1,0 +1,10 @@
+name: Ganja
+version: 1.0
+api: 4.0.0
+depend:
+  - DEVirion
+author: Warro
+main: Warro\Base
+permissions:
+  gb.command.rank:
+    default: op
