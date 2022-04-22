@@ -6,7 +6,7 @@ The purpose of this Core is to provide the community with a decent template for 
 Gameplay on Ganja can be watched [here](https://www.youtube.com/watch?v=Puq4HpencLY).
 
 **Please read carefully and take your time:**
-1. Download this Plugin and place it in your `plugins` folder, then run the server.
+1. Download this Plugin and place it in your `plugins` folder: [Ganja by Warro](https://github.com/Wqrro/Ganja/releases/tag/Ganja)
 ![image](https://user-images.githubusercontent.com/67123872/164607196-2636f2a9-1f8f-44a2-9a87-d8cd124e89cc.png)
 2. Download the DEVirion Plugin and place it in your `plugins` folder: [DEVirion by poggit](https://poggit.pmmp.io/p/DEVirion/1.2.8)
 ![image](https://user-images.githubusercontent.com/67123872/164607376-9a59aace-944b-492e-8423-398ab8531d72.png)
