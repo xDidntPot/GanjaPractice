@@ -3,4 +3,4 @@ A simple but scalable FFA Practice Core featuring one Game Mode. An example of t
 
 Join my discord with **discord.gg/vasar**!
 
-Gameplay on ganja.bet can be found [here](https://www.youtube.com/watch?v=Puq4HpencLY).
+Gameplay on Ganja can be found [here](https://www.youtube.com/watch?v=Puq4HpencLY).
