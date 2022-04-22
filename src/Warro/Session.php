@@ -56,7 +56,7 @@ class Session
 
 	public function onJoin(): void
 	{
-		$this->plugin->getScheduler()->scheduleRepeatingTask(new BaseTask($this->plugin, $this, $this->player), 1);
+		$this->plugin->getScheduler()->scheduleRepeatingTask(new BaseTask($this, $this->player), 1);
 
 		$this->plugin->utils->teleport($this->player, Variables::TELEPORT_LOBBY, true);
 
