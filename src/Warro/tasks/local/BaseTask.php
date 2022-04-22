@@ -15,7 +15,6 @@ namespace Warro\tasks\local;
 
 use pocketmine\player\Player;
 use pocketmine\scheduler\Task;
-use Warro\Base;
 use Warro\Session;
 use Warro\User;
 
@@ -24,7 +23,7 @@ class BaseTask extends Task
 
 	private int $tick = 0;
 
-	public function __construct(Base $plugin, private Session $session, private Player|User $player)
+	public function __construct(private Session $session, private Player|User $player)
 	{
 	}
 
