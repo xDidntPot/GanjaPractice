@@ -1,5 +1,5 @@
 # Ganja
-A simple but scalable FFA Practice Core featuring one Game Mode. An example of this Plugin can be found in-game at **ganja.bet:19132**!
+A simple but scalable FFA Practice Core featuring one Game Mode & Vasar PvP aspects. An example of this Plugin can be found in-game at **ganja.bet:19132**!
 
 The purpose of this Core is to provide the community with a decent template for making a pot server. There are little to no good examples let alone any at all. It has most of Vasar's PvP aspects, back from before it closed. Everything is hard-coded to promote actual use and change of the Core so there's some variety in the community.
 
