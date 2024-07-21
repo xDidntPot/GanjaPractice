@@ -31,7 +31,7 @@ class WorldListener implements Listener{
 	 */
 	public function onPlace(BlockPlaceEvent $event){
 		$player = $event->getPlayer();
-		if(Server::getInstance()->isOp($player->getName())){
+		if(!Server::getInstance()->isOp($player->getName())){
 			$event->cancel();
 			return;
 		}
@@ -45,7 +45,7 @@ class WorldListener implements Listener{
 	 */
 	public function onBreak(BlockBreakEvent $event){
 		$player = $event->getPlayer();
-		if(Server::getInstance()->isOp($player->getName())){
+		if(!Server::getInstance()->isOp($player->getName())){
 			$event->cancel();
 			return;
 		}
@@ -59,7 +59,7 @@ class WorldListener implements Listener{
 	 */
 	public function onBucketFill(PlayerBucketFillEvent $event) : void{
 		$player = $event->getPlayer();
-		if(Server::getInstance()->isOp($player->getName())){
+		if(!Server::getInstance()->isOp($player->getName())){
 			$event->cancel();
 			return;
 		}
@@ -73,7 +73,7 @@ class WorldListener implements Listener{
 	 */
 	public function onBucketEmpty(PlayerBucketEmptyEvent $event) : void{
 		$player = $event->getPlayer();
-		if(Server::getInstance()->isOp($player->getName())){
+		if(!Server::getInstance()->isOp($player->getName())){
 			$event->cancel();
 			return;
 		}
