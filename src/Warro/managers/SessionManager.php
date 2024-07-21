@@ -15,31 +15,26 @@ use pocketmine\player\Player;
 use Warro\Base;
 use Warro\Session;
 
-class SessionManager
-{
+class SessionManager{
 
-	public const RANK = RankManager::DEFAULT;
+	public const int RANK = RankManager::DEFAULT;
 
 	public array $sessions = [];
 	public static SessionManager $instance;
 
-	public function __construct(private Base $plugin)
-	{
+	public function __construct(private Base $plugin){
 		self::$instance = $this;
 	}
 
-	public static function getInstance(): self
-	{
+	public static function getInstance() : self{
 		return self::$instance;
 	}
 
-	public function getSession(Player $player): ?Session
-	{
+	public function getSession(Player $player) : ?Session{
 		return $this->sessions[$player->getName()] ?? null;
 	}
 
-	public function createSession(Player $player): void
-	{
+	public function createSession(Player $player) : void{
 		$session = new Session($player, $this->plugin);
 		$this->sessions[$player->getName()] = $session;
 	}

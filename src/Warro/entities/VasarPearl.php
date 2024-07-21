@@ -25,32 +25,29 @@ use pocketmine\world\sound\EndermanTeleportSound;
 use Warro\Base;
 use Warro\User;
 
-class VasarPearl extends EnderPearl
-{
+class VasarPearl extends EnderPearl{
 
-	protected $gravity = 0.065;
-	protected $drag = 0.0085;
+	protected float $gravity = 0.065;
+	protected float $drag = 0.0085;
 
-	public function __construct(Location $location, ?Entity $shootingEntity, ?CompoundTag $nbt = null)
-	{
+	public function __construct(Location $location, ?Entity $shootingEntity, ?CompoundTag $nbt = null){
 		parent::__construct($location, $shootingEntity, $nbt);
 		$this->setScale(0.4);
 	}
 
-	protected function onHit(ProjectileHitEvent $event): void
-	{
+	protected function onHit(ProjectileHitEvent $event) : void{
 		$owner = $this->getOwningEntity();
-		if ($owner instanceof User) {
+		if($owner instanceof User){
 			$session = Base::getInstance()->sessionManager->getSession($owner);
-			if ($owner->isAlive() and $session->canTakeDamage()) {
-				if ($event instanceof ProjectileHitEntityEvent) {
+			if($owner->isAlive() and $session->canTakeDamage()){
+				if($event instanceof ProjectileHitEntityEvent){
 					$entityHit = $event->getEntityHit();
-					if ($entityHit instanceof User) {
+					if($entityHit instanceof User){
 						$session = Base::getInstance()->sessionManager->getSession($owner);
 						$session->startAgroTimer();
 					}
 				}
-				if ($owner->getWorld()->getId() === $this->getWorld()->getId()) {
+				if($owner->getWorld()->getId() === $this->getWorld()->getId()){
 					$this->getWorld()->addParticle($owner->getPosition(), new EndermanTeleportParticle());
 					$this->getWorld()->addSound($owner->getPosition(), new EndermanTeleportSound());
 
@@ -65,9 +62,8 @@ class VasarPearl extends EnderPearl
 		}
 	}
 
-	public function entityBaseTick(int $tickDiff = 1): bool
-	{
-		if ($this->isCollided) {
+	public function entityBaseTick(int $tickDiff = 1) : bool{
+		if($this->isCollided){
 			$this->flagForDespawn();
 		}
 		return parent::entityBaseTick($tickDiff);

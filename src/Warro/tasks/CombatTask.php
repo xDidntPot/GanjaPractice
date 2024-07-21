@@ -19,21 +19,18 @@ use Warro\Base;
 use Warro\User;
 use function count;
 
-class CombatTask extends Task
-{
+class CombatTask extends Task{
 
-	public function __construct(private Base $plugin)
-	{
+	public function __construct(private Base $plugin){
 	}
 
-	public function onRun(): void
-	{
-		if (count($this->plugin->utils->taggedPlayer) > 0) {
-			foreach ($this->plugin->utils->taggedPlayer as $name => $time) {
+	public function onRun() : void{
+		if(count($this->plugin->utils->taggedPlayer) > 0){
+			foreach($this->plugin->utils->taggedPlayer as $name => $time){
 				$player = Server::getInstance()->getPlayerExact($name);
-				if ($player instanceof User) {
-					if ($time <= 0) {
-						if ($this->plugin->utils->isTagged($player)) {
+				if($player instanceof User){
+					if($time <= 0){
+						if($this->plugin->utils->isTagged($player)){
 							$this->plugin->utils->setTagged($player, false, true);
 						}
 						return;

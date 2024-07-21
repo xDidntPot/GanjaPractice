@@ -22,49 +22,43 @@ use function count;
 use function microtime;
 use function round;
 
-class CpsManager
-{
+class CpsManager{
 
 	private array $clicks = [];
 
-	public function doesPlayerExist(Player $player): bool
-	{
+	public function doesPlayerExist(Player $player) : bool{
 		return isset($this->clicks[$player->getName()]);
 	}
 
-	public function addPlayer(Player $player)
-	{
-		if (!$this->doesPlayerExist($player)) {
+	public function addPlayer(Player $player){
+		if(!$this->doesPlayerExist($player)){
 			$this->clicks[$player->getName()] = [];
 		}
 	}
 
-	public function removePlayer(Player $player)
-	{
-		if ($this->doesPlayerExist($player)) {
+	public function removePlayer(Player $player){
+		if($this->doesPlayerExist($player)){
 			unset($this->clicks[$player->getName()]);
 		}
 	}
 
-	public function addClick(Player $player)
-	{
+	public function addClick(Player $player){
 		array_unshift($this->clicks[$player->getName()], microtime(true));
-		if (count($this->clicks[$player->getName()]) > 20) {
+		if(count($this->clicks[$player->getName()]) > 20){
 			array_pop($this->clicks[$player->getName()]);
 		}
 
 		$player->sendTip(TextFormat::DARK_GREEN . 'CPS' . TextFormat::DARK_GRAY . ': ' . TextFormat::WHITE . abs($this->getCps($player)));
 	}
 
-	public function getCps(Player $player, float $deltaTime = 1.0, int $roundPrecision = 1): float
-	{
-		if (!$this->doesPlayerExist($player) or empty($this->clicks[$player->getName()])) {
+	public function getCps(Player $player, float $deltaTime = 1.0, int $roundPrecision = 1) : float{
+		if(!$this->doesPlayerExist($player) or empty($this->clicks[$player->getName()])){
 			return 0.0;
 		}
 
 		$mt = microtime(true);
 
-		return round(count(array_filter($this->clicks[$player->getName()], static function (float $t) use ($deltaTime, $mt): bool {
+		return round(count(array_filter($this->clicks[$player->getName()], static function(float $t) use ($deltaTime, $mt) : bool{
 				return ($mt - $t) <= $deltaTime;
 			})) / $deltaTime, $roundPrecision);
 	}

@@ -18,29 +18,26 @@ use pocketmine\scheduler\Task;
 use Warro\Session;
 use Warro\User;
 
-class BaseTask extends Task
-{
+class BaseTask extends Task{
 
 	private int $tick = 0;
 
-	public function __construct(private Session $session, private Player|User $player)
-	{
+	public function __construct(private Session $session, private Player|User $player){
 	}
 
-	public function onRun(): void
-	{
-		if (!$this->player->isConnected()) {
+	public function onRun() : void{
+		if(!$this->player->isConnected()){
 			$this->getHandler()->cancel();
 			return;
 		}
 
-		if ($this->session->hasRespawnTimerStarted()) {
-			if ($this->tick % 20 === 0) {
+		if($this->session->hasRespawnTimerStarted()){
+			if($this->tick % 20 === 0){
 				$this->session->decreaseRespawnTimer();
 			}
 		}
 
-		if ($this->session->hasAgroTimerStarted()) {
+		if($this->session->hasAgroTimerStarted()){
 			$this->session->decreaseAgroTimer();
 		}
 

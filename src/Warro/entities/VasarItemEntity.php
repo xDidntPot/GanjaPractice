@@ -15,12 +15,10 @@ namespace Warro\entities;
 
 use pocketmine\entity\object\ItemEntity;
 
-class VasarItemEntity extends ItemEntity
-{
+class VasarItemEntity extends ItemEntity{
 
-	public function entityBaseTick(int $tickDiff = 1): bool
-	{
-		if ($this->ticksLived >= 20 * 30) {
+	public function entityBaseTick(int $tickDiff = 1) : bool{
+		if($this->ticksLived >= 20 * 30){
 			$this->flagForDespawn();
 		}
 		return parent::entityBaseTick($tickDiff);

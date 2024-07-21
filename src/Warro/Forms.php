@@ -18,14 +18,12 @@ use pocketmine\Server;
 use pocketmine\utils\TextFormat;
 use Warro\forms\SimpleForm;
 
-class Forms
-{
+class Forms{
 
-	public function freeForAll(User|Player $player): void
-	{
-		$form = new SimpleForm(function (User|Player $player, $data = null): void {
-			if (!is_null($data)) {
-				if ($data === -1) {
+	public function freeForAll(User|Player $player) : void{
+		$form = new SimpleForm(function(User|Player $player, $data = null) : void{
+			if(!is_null($data)){
+				if($data === -1){
 					$player->sendMessage(TextFormat::RED . 'This Arena is unavailable at this moment.');
 					return;
 				}
@@ -34,12 +32,12 @@ class Forms
 		});
 
 		$players = 0;
-		if (Server::getInstance()->getWorldManager()->isWorldLoaded(Variables::NODEBUFF_FFA_ARENA)) {
+		if(Server::getInstance()->getWorldManager()->isWorldLoaded(Variables::NODEBUFF_FFA_ARENA)){
 			$players += count(Server::getInstance()->getWorldManager()->getWorldByName(Variables::NODEBUFF_FFA_ARENA)->getPlayers());
 		}
 
 		$exec = -1;
-		if (Server::getInstance()->getWorldManager()->isWorldLoaded(Variables::NODEBUFF_FFA_ARENA)) {
+		if(Server::getInstance()->getWorldManager()->isWorldLoaded(Variables::NODEBUFF_FFA_ARENA)){
 			$exec = 1;
 		}
 

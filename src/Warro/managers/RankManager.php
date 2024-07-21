@@ -11,34 +11,29 @@
 
 namespace Warro\managers;
 
-class RankManager
-{
+class RankManager{
 
 	private array $ranks = [];
 
-	public const DEFAULT = 0;
-	public const VIP = 1;
-	public const OWNER = 2;
+	public const int DEFAULT = 0;
+	public const int VIP = 1;
+	public const int OWNER = 2;
 
-	public function __construct()
-	{
+	public function __construct(){
 		$this->ranks [self::DEFAULT] = $this->getRankAsString(self::DEFAULT);
 		$this->ranks [self::VIP] = $this->getRankAsString(self::VIP);
 		$this->ranks [self::OWNER] = $this->getRankAsString(self::OWNER);
 	}
 
-	public function getRanks(): array
-	{
+	public function getRanks() : array{
 		return $this->ranks;
 	}
 
-	public function doesRankExist(int $rank): bool
-	{
+	public function doesRankExist(int $rank) : bool{
 		return isset($this->ranks[$rank]);
 	}
 
-	public function getRankFromString(string $rank): ?int
-	{
+	public function getRankFromString(string $rank) : ?int{
 		return match (strtolower($rank)) {
 			default => null,
 			'default' => RankManager::DEFAULT,
@@ -47,8 +42,7 @@ class RankManager
 		};
 	}
 
-	public function getRankAsString(int $rank): ?string
-	{
+	public function getRankAsString(int $rank) : ?string{
 		return match ($rank) {
 			default => null,
 			RankManager::DEFAULT => 'Default',

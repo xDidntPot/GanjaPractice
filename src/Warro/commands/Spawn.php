@@ -21,19 +21,17 @@ use pocketmine\utils\TextFormat;
 use Warro\Base;
 use Warro\Variables;
 
-class Spawn extends Command
-{
+class Spawn extends Command{
 
-	public function __construct(private Base $plugin)
-	{
+	public function __construct(private Base $plugin){
 		parent::__construct('spawn', TextFormat::DARK_GREEN . 'Teleport back to Spawn' . TextFormat::RESET . TextFormat::AQUA . ' [Warro#7777 - discord.gg/vasar]');
+		$this->setPermission('gb.command.spawn');
 	}
 
-	public function execute(CommandSender $sender, string $commandLabel, array $args)
-	{
-		if ($sender instanceof Player) {
-			if (!Server::getInstance()->isOp($sender->getName())) {
-				if ($this->plugin->utils->isTagged($sender)) {
+	public function execute(CommandSender $sender, string $commandLabel, array $args){
+		if($sender instanceof Player){
+			if(!Server::getInstance()->isOp($sender->getName())){
+				if($this->plugin->utils->isTagged($sender)){
 					$sender->sendMessage(TextFormat::RED . 'Please wait until you\'re out of Combat.');
 					return;
 				}

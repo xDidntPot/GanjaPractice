@@ -24,19 +24,25 @@ use pocketmine\entity\Human;
 use pocketmine\entity\Location;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\player\PlayerChatEvent;
-use pocketmine\item\{ItemFactory, ItemIds};
 use pocketmine\item\enchantment\EnchantmentInstance;
+use pocketmine\item\ItemIdentifier;
+use pocketmine\item\ItemTypeIds;
+use pocketmine\item\PotionType;
+use pocketmine\item\VanillaItems;
+use pocketmine\network\mcpe\NetworkBroadcastUtils;
 use pocketmine\network\mcpe\protocol\AddActorPacket;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
+use pocketmine\network\Network;
 use pocketmine\player\GameMode;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
 use Warro\entities\DeadEntity;
+use Warro\items\VasarItemEnderPearl;
+use Warro\items\VasarItemSplashPotion;
 use Warro\managers\RankManager;
 
-class Utils
-{
+class Utils{
 
 	public array $taggedPlayer = [];
 	public array $pearlPlayer = [];
@@ -50,8 +56,7 @@ class Utils
 	public ?Location $spawnLocation = null;
 	public ?Location $nodebuffLocation = null;
 
-	public function getChatFormat(Player $player, PlayerChatEvent $event): string
-	{
+	public function getChatFormat(Player $player, PlayerChatEvent $event) : string{
 		$session = Base::getInstance()->sessionManager->getSession($player);
 
 		return match ($session->getRank()) {
@@ -62,8 +67,7 @@ class Utils
 		};
 	}
 
-	public function getTagFormat(Player $player): string
-	{
+	public function getTagFormat(Player $player) : string{
 		$session = Base::getInstance()->sessionManager->getSession($player);
 
 		return match ($session->getRank()) {
@@ -74,11 +78,10 @@ class Utils
 		};
 	}
 
-	public function teleport(Player $player, int $where, bool $doKit = false): void
-	{
+	public function teleport(Player $player, int $where, bool $doKit = false) : void{
 		$session = Base::getInstance()->sessionManager->getSession($player);
 
-		switch ($where) {
+		switch($where){
 			default:
 				$player->teleport($this->spawnLocation);
 				break;
@@ -110,25 +113,24 @@ class Utils
 			Variables::TELEPORT_NODEBUFF => Variables::KIT_NODEBUFF,
 		};
 
-		if ($doKit) {
+		if($doKit){
 			$player->noDamageTicks = 20;
 			$this->kit($player, $kit);
 		}
 	}
 
-	public function kit(Player $player, int $kit, bool $guess = false): void
-	{
-		if (!$player instanceof User) {
+	public function kit(Player $player, int $kit, bool $guess = false) : void{
+		if(!$player instanceof User){
 			return;
 		}
 
 		$session = Base::getInstance()->sessionManager->getSession($player);
 
-		if (!$session->canTakeDamage()) {
+		if(!$session->canTakeDamage()){
 			return;
 		}
 
-		if ($guess) {
+		if($guess){
 			$kit = match ($player->getWorld()?->getFolderName()) {
 				Variables::NODEBUFF_FFA_ARENA => Variables::KIT_NODEBUFF,
 				default => 0,
@@ -136,7 +138,7 @@ class Utils
 		}
 
 		$player->setInvisible(false);
-		$player->setImmobile(false);
+		$player->setNoClientPredictions(false);
 		$session->setLastDamagePosition();
 		$player->setHealth(20);
 		$player->getEffects()->clear();
@@ -151,38 +153,41 @@ class Utils
 		$player->getXpManager()->setXpAndProgress(0, 0.0);
 		$player->getInventory()->setHeldItemIndex(0);
 
-		switch ($kit) {
+		switch($kit){
 			case Variables::KIT_LOBBY:
-				$ffa = ItemFactory::getInstance()->get(ItemIds::DIAMOND_SWORD);
+				$ffa = VanillaItems::DIAMOND_SWORD();
 				$ffa->setCustomName(TextFormat::RESET . TextFormat::DARK_GREEN . 'Arenas');
 
 				$player->getInventory()->setItem(0, $ffa);
 				break;
 			case Variables::KIT_NODEBUFF:
-				$helmet = ItemFactory::getInstance()->get(ItemIds::DIAMOND_HELMET);
+				$helmet = VanillaItems::DIAMOND_HELMET();
 				$helmet->setCustomName(TextFormat::RESET . TextFormat::DARK_GREEN . Variables::NAME);
 				$helmet->addEnchantment(new EnchantmentInstance(EnchantmentIdMap::getInstance()->fromId(EnchantmentIds::UNBREAKING), 10));
 				$player->getArmorInventory()->setHelmet($helmet->setUnbreakable(true));
-				$chestplate = ItemFactory::getInstance()->get(ItemIds::DIAMOND_CHESTPLATE);
+				$chestplate = VanillaItems::DIAMOND_CHESTPLATE();
 				$chestplate->setCustomName(TextFormat::RESET . TextFormat::DARK_GREEN . Variables::NAME);
 				$chestplate->addEnchantment(new EnchantmentInstance(EnchantmentIdMap::getInstance()->fromId(EnchantmentIds::UNBREAKING), 10));
 				$player->getArmorInventory()->setChestplate($chestplate->setUnbreakable(true));
-				$leggings = ItemFactory::getInstance()->get(ItemIds::DIAMOND_LEGGINGS);
+				$leggings = VanillaItems::DIAMOND_LEGGINGS();
 				$leggings->setCustomName(TextFormat::RESET . TextFormat::DARK_GREEN . Variables::NAME);
 				$leggings->addEnchantment(new EnchantmentInstance(EnchantmentIdMap::getInstance()->fromId(EnchantmentIds::UNBREAKING), 10));
 				$player->getArmorInventory()->setLeggings($leggings->setUnbreakable(true));
-				$boots = ItemFactory::getInstance()->get(ItemIds::DIAMOND_BOOTS);
+				$boots = VanillaItems::DIAMOND_BOOTS();
 				$boots->setCustomName(TextFormat::RESET . TextFormat::DARK_GREEN . Variables::NAME);
 				$boots->addEnchantment(new EnchantmentInstance(EnchantmentIdMap::getInstance()->fromId(EnchantmentIds::UNBREAKING), 10));
 				$player->getArmorInventory()->setBoots($boots->setUnbreakable(true));
-				$sword = ItemFactory::getInstance()->get(ItemIds::DIAMOND_SWORD);
+				$sword = VanillaItems::DIAMOND_SWORD();
 				$sword->setCustomName(TextFormat::RESET . TextFormat::DARK_GREEN . Variables::NAME);
 				$sword->addEnchantment(new EnchantmentInstance(EnchantmentIdMap::getInstance()->fromId(EnchantmentIds::UNBREAKING), 10));
 
-				$pearls = ItemFactory::getInstance()->get(ItemIds::ENDER_PEARL, 0, 16);
+				$pearls = new VasarItemEnderPearl(new ItemIdentifier(ItemTypeIds::ENDER_PEARL));
+				$pearls->setCount(16);
 				$pearls->setCustomName(TextFormat::RESET . TextFormat::DARK_GREEN . Variables::NAME);
 
-				$pots = ItemFactory::getInstance()->get(ItemIds::SPLASH_POTION, 22, 36);
+				$type = PotionType::STRONG_HEALING();
+				$pots = new VasarItemSplashPotion(new ItemIdentifier(ItemTypeIds::SPLASH_POTION), $type->getDisplayName() . ' Splash Potion', $type);
+				$pots->setCount(36);
 				$pots->setCustomName(TextFormat::RESET . TextFormat::DARK_GREEN . Variables::NAME);
 
 				$player->getInventory()->setItem(0, $sword->setUnbreakable(true));
@@ -194,19 +199,18 @@ class Utils
 		}
 	}
 
-	public function doDamageCheck(Player $player, EntityDamageEvent $event): void
-	{
-		if (!$player instanceof User) {
+	public function doDamageCheck(Player $player, EntityDamageEvent $event) : void{
+		if(!$player instanceof User){
 			return;
 		}
 
 		$session = Base::getInstance()->sessionManager->getSession($player);
 
 		$damager = $session->getDamager();
-		if (!$event->isCancelled() and $player->isSurvival() and $player->isAlive() and $session->canTakeDamage()) {
+		if(!$event->isCancelled() and $player->isSurvival() and $player->isAlive() and $session->canTakeDamage()){
 			$final = $event->getFinalDamage();
 			$health = $player->getHealth();
-			if ($final >= $health) {
+			if($final >= $health){
 				$event->cancel();
 				$damager = is_null($damager) ? null : Server::getInstance()->getPlayerExact($damager);
 				$this->onDeath($player, $damager);
@@ -214,10 +218,9 @@ class Utils
 		}
 	}
 
-	public function onDeath(Player $player, Player|null $killer = null, bool $animation = true, bool $actuallyDied = false): void
-	{
+	public function onDeath(Player $player, Player|null $killer = null, bool $animation = true, bool $actuallyDied = false) : void{
 
-		if ($killer instanceof User and $player->getName() === $killer->getName()) {
+		if($killer instanceof User and $player->getName() === $killer->getName()){
 			return;
 		}
 
@@ -227,26 +230,26 @@ class Utils
 		$session->resetKillstreak();
 		$session->resetAgroTimer();
 
-		if ($killer instanceof User and $this->isInFfa($killer)) {
+		if($killer instanceof User and $this->isInFfa($killer)){
 			$sessionKiller = Base::getInstance()->sessionManager->getSession($killer);
 
 			$sessionKiller->addKill();
 			$sessionKiller->addToKillstreak();
-			if ($this->isInNoDebuffFfa($killer)) {
+			if($this->isInNoDebuffFfa($killer)){
 				$killerInfo = 0;
 				$playerInfo = 0;
-				foreach ($killer->getInventory()->getContents() as $contents) {
-					if ($contents->getId() === ItemIds::SPLASH_POTION and $contents->getMeta() === 21 or $contents->getMeta() === 22) {
+				foreach($killer->getInventory()->getContents() as $contents){
+					if($contents->getTypeId() === ItemTypeIds::SPLASH_POTION){
 						$killerInfo++;
 					}
 				}
-				foreach ($player->getInventory()->getContents() as $contents) {
-					if ($contents->getId() === ItemIds::SPLASH_POTION and $contents->getMeta() === 21 or $contents->getMeta() === 22) {
+				foreach($player->getInventory()->getContents() as $contents){
+					if($contents->getTypeId() === ItemTypeIds::SPLASH_POTION){
 						$playerInfo++;
 					}
 				}
 				$message = TextFormat::GREEN . $killer->getDisplayName() . TextFormat::DARK_GREEN . '[' . $killerInfo . ']' . TextFormat::DARK_GRAY . ' - ' . TextFormat::RED . $player->getDisplayName() . TextFormat::DARK_RED . '[' . $playerInfo . ']';
-			} else {
+			}else{
 				$message = TextFormat::GREEN . $killer->getDisplayName() . TextFormat::DARK_GRAY . ' - ' . TextFormat::RED . $player->getDisplayName();
 			}
 
@@ -260,7 +263,7 @@ class Utils
 		$this->setTagged($player, false, true, true, -1);
 		$this->setPearlCooldown($player, false);
 
-		if ($animation) {
+		if($animation){
 			$human = new DeadEntity($player->getLocation(), $player->getSkin());
 
 			$human->setScale($player->getScale());
@@ -279,7 +282,7 @@ class Utils
 			$human->broadcastAnimation(new DeathAnimation($human), $player->getViewers());
 			$human->broadcastAnimation(new DeathAnimation($human), [$player]);
 
-			if ($player instanceof User and $killer instanceof User) {
+			if($player instanceof User and $killer instanceof User){
 				$human->shove($human->getPosition()->getX() - $killer->getPosition()->getX(), $human->getPosition()->getZ() - $killer->getPosition()->getZ(), 0.5);
 				$this->doLightning($human, $player);
 			}
@@ -304,9 +307,8 @@ class Utils
 		$session->startRespawnTimer($time);
 	}
 
-	public function doLightning(?Human $human, Player $player)
-	{
-		if (is_null($human)) {
+	public function doLightning(?Human $human, Player $player){
+		if(is_null($human)){
 			$human = $player;
 		}
 
@@ -334,95 +336,88 @@ class Utils
 		$thunder->volume = 1;
 		$thunder->pitch = 1;
 
-		Server::getInstance()->broadcastPackets($player->getViewers(), [$lightning, $thunder]);
+		NetworkBroadcastUtils::broadcastPackets($player->getViewers(), [$lightning, $thunder]);
 	}
 
-	public function setPearlCooldown(Player $player, bool $value = true, bool $notify = false, int $time = Variables::PEARL_COOLDOWN): void
-	{
-		if (!$player instanceof User) {
+	public function setPearlCooldown(Player $player, bool $value = true, bool $notify = false, int $time = Variables::PEARL_COOLDOWN) : void{
+		if(!$player instanceof User){
 			return;
 		}
 
-		if (!$player->isSurvival()) {
+		if(!$player->isSurvival()){
 			return;
 		}
 
-		if ($value) {
-			if (!$this->isInPearlCooldown($player)) {
-				if ($notify) {
+		if($value){
+			if(!$this->isInPearlCooldown($player)){
+				if($notify){
 					$player->sendActionBarMessage(TextFormat::RED . 'Pearl-Cooldown Started');
 				}
 			}
 			$this->pearlPlayer[$player->getName()] = $time;
-		} else {
-			if ($this->isInPearlCooldown($player)) {
+		}else{
+			if($this->isInPearlCooldown($player)){
 				unset($this->pearlPlayer[$player->getName()]);
-				if ($notify) {
+				if($notify){
 					$player->sendActionBarMessage(TextFormat::GREEN . 'Pearl-Cooldown Expired');
 				}
 			}
 		}
 	}
 
-	public function isInPearlCooldown(Player $player): bool
-	{
+	public function isInPearlCooldown(Player $player) : bool{
 		return isset($this->pearlPlayer[$player->getName()]);
 	}
 
-	public function setTagged(Player $player, bool $value = true, bool $notify = false, bool $clearDamager = true, int $time = Variables::COMBAT_TAG): void
-	{
-		if (!$player instanceof User) {
+	public function setTagged(Player $player, bool $value = true, bool $notify = false, bool $clearDamager = true, int $time = Variables::COMBAT_TAG) : void{
+		if(!$player instanceof User){
 			return;
 		}
 
-		if (!$player->isSurvival()) {
+		if(!$player->isSurvival()){
 			return;
 		}
 
 		$session = Base::getInstance()->sessionManager->getSession($player);
 
-		if ($value) {
-			if (!$this->isTagged($player)) {
-				if ($notify) {
+		if($value){
+			if(!$this->isTagged($player)){
+				if($notify){
 					$player->sendActionBarMessage(TextFormat::RED . 'Combat-Tag Started');
 				}
-			} else {
+			}else{
 				$originalTime = $this->taggedPlayer[$player->getName()];
-				if ($originalTime >= Variables::COMBAT_TAG_KILL and $time === Variables::COMBAT_TAG_KILL) {
+				if($originalTime >= Variables::COMBAT_TAG_KILL and $time === Variables::COMBAT_TAG_KILL){
 					$player->sendActionBarMessage(TextFormat::GOLD . 'Combat-Tag Reduced');
 				}
 			}
 			$this->taggedPlayer[$player->getName()] = $time;
-		} else {
-			if ($this->isTagged($player)) {
+		}else{
+			if($this->isTagged($player)){
 				unset($this->taggedPlayer[$player->getName()]);
-				if ($notify) {
+				if($notify){
 					$player->sendActionBarMessage(TextFormat::GREEN . ($time === -1 ? 'Combat-Tag Removed' : 'Combat-Tag Expired'));
 				}
-				if ($clearDamager) {
+				if($clearDamager){
 					$session->setDamager();
 				}
 			}
 		}
 	}
 
-	public function isTagged(Player $player): bool
-	{
+	public function isTagged(Player $player) : bool{
 		return isset($this->taggedPlayer[$player->getName()]);
 	}
 
-	public function isInSpawn(Player $player): bool
-	{
+	public function isInSpawn(Player $player) : bool{
 		return $player->getWorld()->getFolderName() === Variables::SPAWN;
 	}
 
-	public function isInNoDebuffFfa(Player $player): bool
-	{
+	public function isInNoDebuffFfa(Player $player) : bool{
 		return $player->getWorld()->getFolderName() === Variables::NODEBUFF_FFA_ARENA;
 	}
 
-	public function isInFfa(Player $player): bool
-	{
+	public function isInFfa(Player $player) : bool{
 		return $this->isInNoDebuffFfa($player);
 	}
 }

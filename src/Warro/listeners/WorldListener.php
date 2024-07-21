@@ -18,27 +18,24 @@ use pocketmine\event\block\BlockBurnEvent;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\block\BlockUpdateEvent;
 use pocketmine\event\block\LeavesDecayEvent;
-use pocketmine\event\entity\ExplosionPrimeEvent;
 use pocketmine\event\inventory\CraftItemEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerBucketEmptyEvent;
 use pocketmine\event\player\PlayerBucketFillEvent;
 use pocketmine\Server;
 
-class WorldListener implements Listener
-{
+class WorldListener implements Listener{
 
 	/**
 	 * @priority HIGHEST
 	 */
-	public function onPlace(BlockPlaceEvent $event)
-	{
+	public function onPlace(BlockPlaceEvent $event){
 		$player = $event->getPlayer();
-		if (Server::getInstance()->isOp($player->getName())) {
+		if(Server::getInstance()->isOp($player->getName())){
 			$event->cancel();
 			return;
 		}
-		if (!$player->isCreative()) {
+		if(!$player->isCreative()){
 			$event->cancel();
 		}
 	}
@@ -46,14 +43,13 @@ class WorldListener implements Listener
 	/**
 	 * @priority HIGHEST
 	 */
-	public function onBreak(BlockBreakEvent $event)
-	{
+	public function onBreak(BlockBreakEvent $event){
 		$player = $event->getPlayer();
-		if (Server::getInstance()->isOp($player->getName())) {
+		if(Server::getInstance()->isOp($player->getName())){
 			$event->cancel();
 			return;
 		}
-		if (!$player->isCreative()) {
+		if(!$player->isCreative()){
 			$event->cancel();
 		}
 	}
@@ -61,14 +57,13 @@ class WorldListener implements Listener
 	/**
 	 * @priority HIGHEST
 	 */
-	public function onBucketFill(PlayerBucketFillEvent $event): void
-	{
+	public function onBucketFill(PlayerBucketFillEvent $event) : void{
 		$player = $event->getPlayer();
-		if (Server::getInstance()->isOp($player->getName())) {
+		if(Server::getInstance()->isOp($player->getName())){
 			$event->cancel();
 			return;
 		}
-		if (!$player->isCreative()) {
+		if(!$player->isCreative()){
 			$event->cancel();
 		}
 	}
@@ -76,14 +71,13 @@ class WorldListener implements Listener
 	/**
 	 * @priority HIGHEST
 	 */
-	public function onBucketEmpty(PlayerBucketEmptyEvent $event): void
-	{
+	public function onBucketEmpty(PlayerBucketEmptyEvent $event) : void{
 		$player = $event->getPlayer();
-		if (Server::getInstance()->isOp($player->getName())) {
+		if(Server::getInstance()->isOp($player->getName())){
 			$event->cancel();
 			return;
 		}
-		if (!$player->isCreative()) {
+		if(!$player->isCreative()){
 			$event->cancel();
 		}
 	}
@@ -91,40 +85,28 @@ class WorldListener implements Listener
 	/**
 	 * @priority HIGHEST
 	 */
-	public function onCraft(CraftItemEvent $event)
-	{
+	public function onCraft(CraftItemEvent $event){
 		$event->cancel();
 	}
 
 	/**
 	 * @priority HIGHEST
 	 */
-	public function onExplode(ExplosionPrimeEvent $event)
-	{
-		$event->setBlockBreaking(false);
-	}
-
-	/**
-	 * @priority HIGHEST
-	 */
-	public function onLeaveDecay(LeavesDecayEvent $event)
-	{
+	public function onLeaveDecay(LeavesDecayEvent $event){
 		$event->cancel();
 	}
 
 	/**
 	 * @priority HIGHEST
 	 */
-	public function onBurn(BlockBurnEvent $event)
-	{
+	public function onBurn(BlockBurnEvent $event){
 		$event->cancel();
 	}
 
 	/**
 	 * @priority HIGHEST
 	 */
-	public function onUpdate(BlockUpdateEvent $event)
-	{
+	public function onUpdate(BlockUpdateEvent $event){
 		$event->cancel();
 	}
 }

@@ -22,26 +22,22 @@ use pocketmine\player\Player;
 use Warro\Base;
 use Warro\entities\VasarPearl;
 
-class VasarItemEnderPearl extends EnderPearl
-{
+class VasarItemEnderPearl extends EnderPearl{
 
-	public function getThrowForce(): float
-	{
+	public function getThrowForce() : float{
 		return 2.35;
 	}
 
-	protected function createEntity(Location $location, Player $thrower): Throwable
-	{
+	protected function createEntity(Location $location, Player $thrower) : Throwable{
 		return new VasarPearl($location, $thrower);
 	}
 
-	public function onClickAir(Player $player, Vector3 $directionVector): ItemUseResult
-	{
-		if (Base::getInstance()->utils->isInPearlCooldown($player)) {
+	public function onClickAir(Player $player, Vector3 $directionVector, array &$returnedItems) : ItemUseResult{
+		if(Base::getInstance()->utils->isInPearlCooldown($player)){
 			return ItemUseResult::FAIL();
-		} else {
+		}else{
 			Base::getInstance()->utils->setPearlCooldown($player, true, true);
 		}
-		return parent::onClickAir($player, $directionVector);
+		return parent::onClickAir($player, $directionVector, $returnedItems);
 	}
 }

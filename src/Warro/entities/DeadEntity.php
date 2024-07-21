@@ -22,15 +22,13 @@ use function mt_getrandmax;
 use function mt_rand;
 use function sqrt;
 
-class DeadEntity extends Human
-{
+class DeadEntity extends Human{
 
 	private int $life = 0;
 
-	public function entityBaseTick(int $tickDiff = 1): bool
-	{
+	public function entityBaseTick(int $tickDiff = 1) : bool{
 		$this->life++;
-		if ($this->life >= 25) {
+		if($this->life >= 25){
 			$this->flagForDespawn();
 			$this->getWorld()->addParticle($this->getLocation(), new EntityFlameParticle());
 			return true;
@@ -38,66 +36,55 @@ class DeadEntity extends Human
 		return parent::entityBaseTick($tickDiff);
 	}
 
-	public function canBeCollidedWith(): bool
-	{
+	public function canBeCollidedWith() : bool{
 		return false;
 	}
 
-	public function canBeMovedByCurrents(): bool
-	{
+	public function canBeMovedByCurrents() : bool{
 		return false;
 	}
 
-	public function canBreathe(): bool
-	{
+	public function canBreathe() : bool{
 		return false;
 	}
 
-	public function canClimbWalls(): bool
-	{
+	public function canClimbWalls() : bool{
 		return false;
 	}
 
-	public function canClimb(): bool
-	{
+	public function canClimb() : bool{
 		return false;
 	}
 
-	public function canCollideWith(Entity $entity): bool
-	{
+	public function canCollideWith(Entity $entity) : bool{
 		return false;
 	}
 
-	public function attack(EntityDamageEvent $source): void
-	{
+	public function attack(EntityDamageEvent $source) : void{
 	}
 
-	public function knockBack(float $x, float $z, float $force = 0.4, ?float $verticalLimit = 0.4): void
-	{
+	public function knockBack(float $x, float $z, float $force = 0.4, ?float $verticalLimit = 0.4) : void{
 	}
 
-	public function doAirSupplyTick(int $tickDiff): bool
-	{
+	public function doAirSupplyTick(int $tickDiff) : bool{
 		return true;
 	}
 
-	public function doOnFireTick(int $tickDiff = 1): bool
-	{
+	public function doOnFireTick(int $tickDiff = 1) : bool{
 		return false;
 	}
 
-	protected function onHitGround(): ?float
-	{
+	protected function onHitGround() : ?float{
 		$fallBlockPos = $this->location->floor();
 		$fallBlock = $this->getWorld()->getBlock($fallBlockPos);
-		if (count($fallBlock->getCollisionBoxes()) === 0) {
+		if(count($fallBlock->getCollisionBoxes()) === 0){
 			$fallBlockPos = $fallBlockPos->down();
 			$fallBlock = $this->getWorld()->getBlock($fallBlockPos);
 		}
 		$newVerticalVelocity = $fallBlock->onEntityLand($this);
 
 		$damage = $this->calculateFallDamage($this->fallDistance);
-		if ($damage > 0) {
+		if($damage > 0){
 			$ev = new EntityDamageEvent($this, EntityDamageEvent::CAUSE_FALL, $damage);
 			$this->attack($ev);
 		}
@@ -106,13 +93,12 @@ class DeadEntity extends Human
 		return $newVerticalVelocity;
 	}
 
-	public function shove(float $x, float $z, float $base = 0.4): void
-	{
+	public function shove(float $x, float $z, float $base = 0.4) : void{
 		$f = sqrt($x * $x + $z * $z);
-		if ($f <= 0) {
+		if($f <= 0){
 			return;
 		}
-		if (mt_rand() / mt_getrandmax() > $this->knockbackResistanceAttr->getValue()) {
+		if(mt_rand() / mt_getrandmax() > $this->knockbackResistanceAttr->getValue()){
 			$f = 1 / $f;
 
 			$motion = clone $this->motion;
